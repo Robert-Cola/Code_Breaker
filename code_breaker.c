@@ -1,5 +1,5 @@
 /*Written by: Robert Colanardi
-  Last Updated: Oct-07-2020
+  Last Updated: June-14-2024
 */
 #include <stdio.h>
 #include "code_breaker.h"
@@ -32,8 +32,8 @@ void print_game_header()
 
 int game_mode_select()
 {
-    printf("\t\t\tSelect an option from the menu:\n\t\t\t\t1:Single player"
-           "\n\t\t\t\t2:Instructions\n\t\t\t\t3:exit\n\t\t\t\t\tselect: ");
+    printf("\t\t\tSelect an option from the menu:\n\t\t\t\t1: Single player"
+           "\n\t\t\t\t2: Instructions\n\t\t\t\t3: exit\n\t\t\t\t\tselect: ");
     int user_selected_mode;
     if (fscanf(stdin, "%d", &user_selected_mode) != 0)
     {
@@ -59,7 +59,7 @@ int single_player_game()
     int game_key[4] = {-1, -1, -1, -1};
     int guess[4] = {-1, -1, -1, -1};
     generate_code(game_key);
-    // printf("generated key: %d%d%d%d\n",game_key[0],game_key[1],game_key[2],game_key[3]);
+    // printf("generated key: %d%d%d%d\n", game_key[0], game_key[1], game_key[2], game_key[3]);
 
     int game_over = 0;
     int turn_number = 0;
@@ -68,12 +68,12 @@ int single_player_game()
     {
         // printf("The is turn: %d\n",turn_number);
         // print the game board
-        clear_screen(); // clear the console
+        // clear_screen(); // clear the console
         print_game_board(game_key, guess_log, guess_correctness_log, turn_number);
         turn_number++;
         // get a guess from the user
         get_guess(guess);
-        printf("guess = {%d,%d,%d,%d}\n", guess[0], guess[1], guess[2], guess[3]);
+        // printf("guess = {%d,%d,%d,%d}\n", guess[0], guess[1], guess[2], guess[3]);
 
         for (int i = 0; i < 4; i++)
         {
@@ -81,7 +81,7 @@ int single_player_game()
         }
         // check the guesses guess_correctness
         guess_correctness = check_guess(game_key, guess);
-        // printf("guess_correctness = %d\n",guess_correctness);
+        printf("guess_correctness = %d\n", guess_correctness);
         guess_correctness_log[turn_number - 1] = guess_correctness;
 
         if (guess_correctness == 100)
@@ -89,7 +89,7 @@ int single_player_game()
             // the user was totally correct
             game_over = 1;
         }
-        if (turn_number == 10)
+        if (turn_number == 10 && game_over != 1)
         {
             clear_screen();
             print_game_board(game_key, guess_log, guess_correctness_log, turn_number);
@@ -131,10 +131,12 @@ void get_guess(int *guess)
     size_t len = 8;
     while (getting_input == 0)
     {
-        printf("Your guess must be 4 digits long and contain only 0-7.\n\tEnter you guess:");
+        printf("\n\tYour guess must be 4 digits long and contain only 0-7.\n\tEnter you guess:  ");
+        printf("\033[0;33m");
         if (getline(&line, &len, stdin) != -1)
         {
             // printf("line = '%s' strlen(line) = %d\n",line,strlen(line));
+            printf("\033[0m");
             if (strlen(line) == 5)
             {
                 input = atoi(line);
@@ -168,6 +170,7 @@ void get_guess(int *guess)
         }
     }
     free(line);
+    printf("\033[0m");
 }
 
 void print_instructions()
@@ -285,7 +288,7 @@ void print_game_board(int *game_key, int guess_log[10][4], int *guess_correctnes
 
 void clear_screen()
 {
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 5000; i++)
     {
         printf("\e[1;1H\e[2J");
     }
